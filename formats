@@ -1,26 +1,61 @@
+Saskatchewan driver's licence
+ALPHA: %SK\^(?<1>[A-Z ]+)\^\^\?
+1. Cardholder's full name
+BCD: ;636044(?<1>\d+)==(?<2>\d{4})(?<3>\d{2})(?<4>\d{2})0000\?
+1. Card number
+2. Year of birth
+3. Month of birth
+4. Day of birth
+ALPHA: %.+\s+(?<1>[MF])000\s+(?<2>[A-Z]+)\s+.+\?
+1. Gender
+2. Eye colour
+
 Ontario driver's licence
 ALPHA: %(?<1>.*)\^(?<2>.*)\^(?<3>.*)\^\?
 1. Issuing office
 2. Cardholder's full name
 3. Cardholder's address
-BCD: ;(?<1>\d*)=(?<2>\d*)=?
+BCD: ;(?<1>\d*)=(?<2>\d*)=\?
 1. Card number
 2. Other stuff
-ALPHA: %" (?<1>[^ ]* [^ ]*) *(?<2>[^ ]*) *(?<3>[^ ]*) *(?<4>[^ ]*) *(?<5>[^ ]*) *?
+ALPHA: %" (?<1>[^ ]* [^ ]*) *(?<2>[^ ]*) *(?<3>[^ ]*) *(?<4>[^ ]*) *(?<5>[^ ]*) *\?
 1. Postal code
 2. License type
 3. Gender, height, issue date
 4. License number
 5. Extra data
 
+Driver's licence
+ALPHA: %(<1>[A-Z]+)\^(?<2>[A-Z ]+)\^\^\?
+1. Licence location
+2. Cardholder's full name
+BCD: ;(?<1>\d+)=.*\?
+1. Card number
+ALPHA: %.+(?<1>[MF]).+\?
+1. Gender
+
 Credit card
-ALPHA: %(?<1>.*)\^(?<2>.*)/(?<3>.*)\^(?<4>\d*)?
+ALPHA: %(?<1>.*)\^(?<2>.*)/(?<3>.*)\^(?<4>\d*)\?
 1. Card number
 2. Last name
 3. First name
 4. Other stuff
-BCD: ;(?<1>\d*)=(?<2>\d*)?
+BCD: ;(?<1>\d*)=(?<2>\d*)\?
 1. Card number
 2. Other stuff
+none
+
+Royal Bank Debit Card
+none
+BCD: ;4519(?<1>\d+)=(?<2>\d+)\?
+1. Card number
+2. Other data
+none
+
+Debit Card
+none
+BCD: ;(?<1>\d+)=(?<2>\d+)\?
+1. Card number
+2. Other data
 none
 
