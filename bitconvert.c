@@ -20,6 +20,8 @@
 /* Assumptions:
  * - character set is ALPHA or BCD
  * - each character is succeeded by an odd parity bit
+ * - libbitconvert is run on a system which uses the ASCII character set (this
+ *   is required for the to_ascii function to work correctly)
  */
 
 #include "bitconvert.h"
@@ -40,11 +42,13 @@
 
 
 /* return codes internal to the library; these MUST NOT overlap with BCERR_* */
-#define BCINT_OFFSET	-1024
-#define BCINT_NO_MATCH	BCINT_OFFSET -1
+#define BCINT_OFFSET	1024
+#define BCINT_NO_MATCH	BCINT_OFFSET + 1
 
 
-char to_character(char bits, unsigned char value)
+void (*send_error)(const char*);
+
+char to_ascii(char bits, unsigned char value)
 {
 	if (5 == bits)
 	{
@@ -119,7 +123,7 @@ int bc_decode_format(char* bits, char* result, size_t result_len, unsigned char 
 
 		if (result_idx < result_len)
 		{
-			result[result_idx] = to_character(format_bits, current_value);
+			result[result_idx] = to_ascii(format_bits, current_value);
 			result_idx++;
 
 			if ('?' == result[result_idx - 1])
@@ -420,11 +424,12 @@ int bc_decode_fields(struct bc_decoded* d)
 	return rv;
 }
 
-void bc_init(struct bc_input* in)
+void bc_init(struct bc_input* in, void (*error_callback)(const char*))
 {
 	in->t1[0] = '\0';
 	in->t2[0] = '\0';
 	in->t3[0] = '\0';
+	send_error = error_callback;
 }
 
 int bc_decode(struct bc_input* in, struct bc_decoded* result)
@@ -488,10 +493,30 @@ int bc_decode(struct bc_input* in, struct bc_decoded* result)
 		rc = err;
 	}
 
-	/* only do field lookup if there were no errors during parsing */
-	if (0 == rc) {
-		rc = bc_decode_fields(result);
-	}
-
 	return rc;
+}
+
+int bc_find_fields(struct bc_decoded* result)
+{
+	return bc_decode_fields(result);
+}
+
+const char* bc_strerror(int err)
+{
+	switch (err)
+	{
+	case 0:					return "Success";
+	case BCERR_INVALID_INPUT:		return "Invalid input";
+	case BCERR_PARITY_MISMATCH:		return "Parity mismatch";
+	case BCERR_RESULT_FULL:			return "Result full";
+	case BCERR_INVALID_TRACK:		return "Invalid track";
+	case BCERR_NO_FORMAT_FILE:		return "No format file";
+	case BCERR_PCRE_COMPILE_FAILED:		return "PCRE compile failed";
+	case BCERR_FORMAT_MISSING_PERIOD:	return "Format missing period";
+	case BCERR_FORMAT_MISSING_NAME:		return "Format missing name";
+	case BCERR_NO_MATCHING_FORMAT:		return "No matching format";
+	case BCERR_BAD_FORMAT_ENCODING_TYPE:	return "Bad format encoding type";
+	case BCERR_FORMAT_MISSING_RE:		return "Format missing regular expression";
+	default:				return "Unknown error";
+	}
 }

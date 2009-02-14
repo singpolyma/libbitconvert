@@ -30,17 +30,18 @@
 extern "C" {
 #endif
 
-#define BCERR_INVALID_INPUT		-1
-#define BCERR_PARITY_MISMATCH		-2
-#define BCERR_RESULT_FULL		-3
-#define BCERR_INVALID_TRACK		-4
-#define BCERR_NO_FORMAT_FILE		-5
-#define BCERR_PCRE_COMPILE_FAILED	-6
-#define BCERR_FORMAT_MISSING_PERIOD	-7
-#define BCERR_FORMAT_MISSING_NAME	-8
-#define BCERR_NO_MATCHING_FORMAT	-9
-#define BCERR_BAD_FORMAT_ENCODING_TYPE	-10
-#define BCERR_FORMAT_MISSING_RE		-11
+/* when adding to this list, also add a case to the switch in bc_strerror */
+#define BCERR_INVALID_INPUT		1
+#define BCERR_PARITY_MISMATCH		2
+#define BCERR_RESULT_FULL		3
+#define BCERR_INVALID_TRACK		4
+#define BCERR_NO_FORMAT_FILE		5
+#define BCERR_PCRE_COMPILE_FAILED	6
+#define BCERR_FORMAT_MISSING_PERIOD	7
+#define BCERR_FORMAT_MISSING_NAME	8
+#define BCERR_NO_MATCHING_FORMAT	9
+#define BCERR_BAD_FORMAT_ENCODING_TYPE	10
+#define BCERR_FORMAT_MISSING_RE		11
 
 #define BC_ENCODING_NONE  -1	/* track has no data; not the same as binary */
 #define BC_ENCODING_BINARY 1
@@ -95,8 +96,12 @@ struct bc_decoded {
 };
 
 
-void bc_init(struct bc_input* in);
+/* user may provide a NULL error_callback to ignore error messages */
+void bc_init(struct bc_input* in, void (*error_callback)(const char*));
+
 int bc_decode(struct bc_input* in, struct bc_decoded* result);
+int bc_find_fields(struct bc_decoded* result);
+const char* bc_strerror(int err);
 
 #ifdef __cplusplus
 }

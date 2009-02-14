@@ -53,6 +53,11 @@ char* encoding_to_str(int track)
 	}
 }
 
+void print_error(const char* error)
+{
+	printf("%s\n", error);
+}
+
 int main(void)
 {
 	FILE* input;
@@ -62,7 +67,7 @@ int main(void)
 	int i;
 
 	input = stdin;
-	bc_init(&in);
+	bc_init(&in, print_error);
 
 	while (1)
 	{
@@ -75,7 +80,7 @@ int main(void)
 
 		rv = bc_decode(&in, &result);
 
-		printf("rv: %d\n", rv);
+		printf("Result: %d (%s)\n", rv, bc_strerror(rv));
 		printf("Track 1 - data_len: %lu, encoding: %s, data:\n`%s`\n",
 			(unsigned long)strlen(result.t1),
 			encoding_to_str(result.t1_encoding), result.t1);
@@ -85,6 +90,18 @@ int main(void)
 		printf("Track 3 - data_len: %lu, encoding: %s, data:\n`%s`\n",
 			(unsigned long)strlen(result.t3),
 			encoding_to_str(result.t3_encoding), result.t3);
+
+		if (0 != rv)
+			/* if there was an error, bc_find_fields isn't useful */
+			continue;
+
+		rv = bc_find_fields(&result);
+		if (0 != rv)
+		{
+			printf("Error %d (%s); no fields found for this card\n",
+				rv, bc_strerror(rv));
+			continue;
+		}
 
 		printf("\n=== Fields ===\n");
 		printf("Card name: %s\n", result.name);
