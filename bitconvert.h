@@ -31,17 +31,17 @@ extern "C" {
 #endif
 
 /* when adding to this list, also add a case to the switch in bc_strerror */
-#define BCERR_INVALID_INPUT		1
-#define BCERR_PARITY_MISMATCH		2
-#define BCERR_RESULT_FULL		3
-#define BCERR_INVALID_TRACK		4
-#define BCERR_NO_FORMAT_FILE		5
-#define BCERR_PCRE_COMPILE_FAILED	6
-#define BCERR_FORMAT_MISSING_PERIOD	7
-#define BCERR_FORMAT_MISSING_NAME	8
-#define BCERR_NO_MATCHING_FORMAT	9
+#define BCERR_INVALID_INPUT             1
+#define BCERR_PARITY_MISMATCH           2
+#define BCERR_RESULT_FULL               3
+#define BCERR_INVALID_TRACK             4
+#define BCERR_NO_FORMAT_FILE            5
+#define BCERR_PCRE_COMPILE_FAILED       6
+#define BCERR_FORMAT_MISSING_PERIOD	    7
+#define BCERR_FORMAT_MISSING_NAME	    8
+#define BCERR_NO_MATCHING_FORMAT        9
 #define BCERR_BAD_FORMAT_ENCODING_TYPE	10
-#define BCERR_FORMAT_MISSING_RE		11
+#define BCERR_FORMAT_MISSING_RE		   11
 
 #define BC_ENCODING_NONE  -1	/* track has no data; not the same as binary */
 #define BC_ENCODING_BINARY 1
@@ -53,12 +53,12 @@ extern "C" {
 #define BC_TRACK_2	2
 #define BC_TRACK_3	3
 
-#define BC_INPUT_SIZE	4096
+#define BC_INPUT_SIZE    4096
 #define BC_T1_INPUT_SIZE BC_INPUT_SIZE
 #define BC_T2_INPUT_SIZE BC_INPUT_SIZE
 #define BC_T3_INPUT_SIZE BC_INPUT_SIZE
 
-#define BC_DECODED_SIZE	1024
+#define BC_DECODED_SIZE    1024
 #define BC_T1_DECODED_SIZE BC_DECODED_SIZE
 #define BC_T2_DECODED_SIZE BC_DECODED_SIZE
 #define BC_T3_DECODED_SIZE BC_DECODED_SIZE

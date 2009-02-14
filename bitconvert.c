@@ -25,10 +25,10 @@
  */
 
 #include "bitconvert.h"
-#include <string.h>	/* strspn, strlen */
-#include <pcre.h>	/* pcre* */
-#include <stdio.h>	/* FILE, fopen, fgets */
-#include <ctype.h>	/* isspace */
+#include <string.h>  /* strspn, strlen */
+#include <pcre.h>    /* pcre* */
+#include <stdio.h>   /* FILE, fopen, fgets */
+#include <ctype.h>   /* isspace */
 
 /* TODO: add appropriate calls to pcre_free (probably just re variables) */
 
@@ -251,7 +251,7 @@ int bc_decode_track_fields(char* input, int encoding, int track, FILE* formats,
 	 * errors is available starting at pcre.txt line 2155
 	 */
 	rc = pcre_exec(re, NULL, input, strlen(input), 0, 0,
-		ovector, 3 * MAX_CAPTURED_SUBSTRINGS);
+	               ovector, 3 * MAX_CAPTURED_SUBSTRINGS);
 	if (rc < 0) {
 		rv = BCINT_NO_MATCH;
 		goto skip_fields;
