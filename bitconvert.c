@@ -335,7 +335,7 @@ int bc_decode_fields(struct bc_decoded* d)
 	int err;
 	int rc;
 	int rv;
-	char name[FORMAT_LEN];
+   char name[FORMAT_LEN]; /* For skipping lines... */
 	FILE* formats;
 
 	formats = fopen("formats", "r");
@@ -347,15 +347,12 @@ int bc_decode_fields(struct bc_decoded* d)
 	rv = BCERR_NO_MATCHING_FORMAT;
 
 	/* initialize the name and fields list */
-	d->name[0] = '\0';
 	d->field_names[0][0] = '\0';
 
-	while (fgets(name, FORMAT_LEN, formats)) {
+	while (fgets(d->name, FORMAT_LEN, formats)) {
 		/* TODO: check lengths before strcpy (in general, but here esp.)
 		 */
-		name[strlen(name) - 1] = '\0'; /* remove '\n' */
-		strcpy(d->name, name);
-
+		d->name[strlen(d->name) - 1] = '\0'; /* remove '\n' */
 
 		err = bc_decode_track_fields(d->t1, d->t1_encoding, BC_TRACK_1,
 			formats, d);
@@ -415,7 +412,7 @@ int bc_decode_fields(struct bc_decoded* d)
 		while (fgets(name, FORMAT_LEN, formats) && name[0] != '\n');
 
 		/* empty the name and fields list */
-		d->name[0] = '\0';
+		d->name = "";
 		d->field_names[0][0] = '\0';
 	}
 
