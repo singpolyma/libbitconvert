@@ -16,15 +16,21 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 CC = gcc
-CFLAGS = -ansi -pedantic -Wall -Werror
+CFLAGS = -ansi -pedantic -Wall -Wextra -Werror
 
-all: driver
+all: driver combine
 
 driver: driver.o libbitconvert.a
 	$(CC) $(CFLAGS) -o driver driver.o -L. -lbitconvert -lpcre
 
 driver.o: driver.c bitconvert.h
 	$(CC) $(CFLAGS) -c driver.c
+
+combine: combine.o libbitconvert.a
+	$(CC) $(CFLAGS) -o combine combine.o -L. -lbitconvert -lpcre
+
+combine.o: combine.c bitconvert.h
+	$(CC) $(CFLAGS) -c combine.c
 
 bitconvert.o: bitconvert.c bitconvert.h
 	$(CC) $(CFLAGS) -c bitconvert.c

@@ -21,20 +21,20 @@
 #include <stdio.h>  /* FILE, fgets, printf */
 #include <string.h> /* strlen */
 
+#define TRACK_INPUT_SIZE 4096
+
 
 char* get_track(FILE* input, char* bits, int bits_len)
 {
 	int bits_end;
 
-	if (NULL == fgets(bits, bits_len, input))
-	{
+	if (NULL == fgets(bits, bits_len, input)) {
 		return NULL;
 	}
 	bits_end = strlen(bits);
 
 	/* strip trailing newline */
-	if ('\n' == bits[bits_end - 1])
-	{
+	if ('\n' == bits[bits_end - 1]) {
 		bits[bits_end - 1] = '\0';
 	}
 
@@ -61,43 +61,63 @@ void print_error(const char* error)
 int main(void)
 {
 	FILE* input;
+	char t1[TRACK_INPUT_SIZE];
+	char t2[TRACK_INPUT_SIZE];
+	char t3[TRACK_INPUT_SIZE];
 	struct bc_input in;
 	struct bc_decoded result;
 	int rv;
 	int i;
 
 	input = stdin;
-	bc_init(&in, print_error);
+	bc_init(print_error);
 
-	while (1)
-	{
-		if (NULL == get_track(input, in.t1, sizeof(in.t1)))
+	while (1) {
+		if (NULL == get_track(input, t1, sizeof(t1))) {
 			break;
-		if (NULL == get_track(input, in.t2, sizeof(in.t2)))
+		}
+		if (NULL == get_track(input, t2, sizeof(t2))) {
 			break;
-		if (NULL == get_track(input, in.t3, sizeof(in.t3)))
+		}
+		if (NULL == get_track(input, t3, sizeof(t3))) {
 			break;
+		}
 
+		in.t1 = t1;
+		in.t2 = t2;
+		in.t3 = t3;
 		rv = bc_decode(&in, &result);
 
 		printf("Result: %d (%s)\n", rv, bc_strerror(rv));
-		printf("Track 1 - data_len: %lu, encoding: %s, data:\n`%s`\n",
-			(unsigned long)strlen(result.t1),
-			encoding_to_str(result.t1_encoding), result.t1);
-		printf("Track 2 - data_len: %lu, encoding: %s, data:\n`%s`\n",
-			(unsigned long)strlen(result.t2),
-			encoding_to_str(result.t2_encoding), result.t2);
-		printf("Track 3 - data_len: %lu, encoding: %s, data:\n`%s`\n",
-			(unsigned long)strlen(result.t3),
-			encoding_to_str(result.t3_encoding), result.t3);
+		if (NULL == result.t1) {
+			printf("Track 1 - no data\n");
+		} else {
+			printf("Track 1 - len: %lu, encode: %s, data:\n`%s`\n",
+				(unsigned long)strlen(result.t1),
+				encoding_to_str(result.t1_encoding), result.t1);
+		}
+		if (NULL == result.t2) {
+			printf("Track 2 - no data\n");
+		} else {
+			printf("Track 2 - len: %lu, encode: %s, data:\n`%s`\n",
+				(unsigned long)strlen(result.t2),
+				encoding_to_str(result.t2_encoding), result.t2);
+		}
+		if (NULL == result.t3) {
+			printf("Track 3 - no data\n");
+		} else {
+			printf("Track 3 - len: %lu, encode: %s, data:\n`%s`\n",
+				(unsigned long)strlen(result.t3),
+				encoding_to_str(result.t3_encoding), result.t3);
+		}
 
-		if (0 != rv)
+		if (0 != rv) {
 			/* if there was an error, bc_find_fields isn't useful */
 			continue;
+		}
 
 		rv = bc_find_fields(&result);
-		if (0 != rv)
-		{
+		if (0 != rv) {
 			printf("Error %d (%s); no fields found for this card\n",
 				rv, bc_strerror(rv));
 			continue;
@@ -105,8 +125,7 @@ int main(void)
 
 		printf("\n=== Fields ===\n");
 		printf("Card name: %s\n", result.name);
-		for (i = 0; result.field_names[i][0] != '\0'; i++)
-		{
+		for (i = 0; result.field_names[i] != NULL; i++) {
 			/* NOTE: you should verify that the BC_TRACK_* constants
 			 * in the version of libbitconvert that you are using
 			 * map cleanly onto integers if you wish to print the
@@ -117,6 +136,8 @@ int main(void)
 			printf("Track %d - %s: %s\n", result.field_tracks[i],
 				result.field_names[i], result.field_values[i]);
 		}
+
+		bc_decoded_free(&result);
 	}
 
 	fclose(input);
