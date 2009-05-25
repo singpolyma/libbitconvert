@@ -15,28 +15,22 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-CC = gcc
-CFLAGS = -ansi -pedantic -Wall -Wextra -Werror
+CFLAGS=-ansi -pedantic -Wall -Wextra -Werror
+LDFLAGS=-L. -lbitconvert -lpcre
+
+.PHONY: all clean
 
 all: driver combine
-
 driver: driver.o libbitconvert.a
-	$(CC) $(CFLAGS) -o driver driver.o -L. -lbitconvert -lpcre
-
-driver.o: driver.c bitconvert.h
-	$(CC) $(CFLAGS) -c driver.c
-
 combine: combine.o libbitconvert.a
-	$(CC) $(CFLAGS) -o combine combine.o -L. -lbitconvert -lpcre
-
-combine.o: combine.c bitconvert.h
-	$(CC) $(CFLAGS) -c combine.c
-
-bitconvert.o: bitconvert.c bitconvert.h
-	$(CC) $(CFLAGS) -c bitconvert.c
 
 libbitconvert.a: bitconvert.o
-	ar rcs libbitconvert.a bitconvert.o
+	$(AR) rcs libbitconvert.a bitconvert.o
+
+# .o files explicit to force rebuilt on header change
+driver.o: driver.c bitconvert.h
+combine.o: combine.c bitconvert.h
+bitconvert.o: bitconvert.c bitconvert.h
 
 clean:
-	rm -f *.a *.o driver
+	$(RM) *.a *.o driver
