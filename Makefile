@@ -23,14 +23,16 @@ LDFLAGS=-L. -lbitconvert -lpcre
 all: driver combine
 driver: driver.o libbitconvert.a
 combine: combine.o libbitconvert.a
-
 libbitconvert.a: bitconvert.o
-	$(AR) rcs libbitconvert.a bitconvert.o
 
 # .o files explicit to force rebuilt on header change
 driver.o: driver.c bitconvert.h
 combine.o: combine.c bitconvert.h
 bitconvert.o: bitconvert.c bitconvert.h
+
+# Magic AR rule
+%.a:
+	$(AR) rcs $@ $<
 
 clean:
 	$(RM) *.a *.o driver
