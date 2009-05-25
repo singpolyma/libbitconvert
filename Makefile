@@ -35,4 +35,4 @@ bitconvert.o: bitconvert.c bitconvert.h
 	$(AR) rcs $@ $<
 
 clean:
-	$(RM) *.a *.o driver
+	$(RM) *.a *.o driver combine
