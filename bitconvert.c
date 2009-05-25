@@ -502,7 +502,7 @@ int bc_decode_fields(struct bc_decoded* d)
 	FILE* formats;
 	size_t fields_size;
 
-	formats = fopen("formats", "r");
+	formats = fopen("formats.txt", "r");
 
 	if (NULL == formats) {
 		return BCERR_NO_FORMAT_FILE;
@@ -777,8 +777,6 @@ const char* bc_strerror(int err)
 	case 0:					return "Success";
 	case BCERR_INVALID_INPUT:		return "Invalid input";
 	case BCERR_PARITY_MISMATCH:		return "Parity mismatch";
-	case BCERR_RESULT_FULL:			return "Result full";
-	case BCERR_INVALID_TRACK:		return "Invalid track";
 	case BCERR_NO_FORMAT_FILE:		return "No format file";
 	case BCERR_PCRE_COMPILE_FAILED:		return "PCRE compile failed";
 	case BCERR_FORMAT_MISSING_PERIOD:	return "Format missing period";
