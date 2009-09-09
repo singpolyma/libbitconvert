@@ -57,6 +57,7 @@ none
 BCD: ;(?<1>\d+)=(?<2>\d+)\?
 1. Card number
 2. Other data
+none
 
 M&M Meat Shops MAX card
 ALPHA: %(?<1>\d{8})\?
